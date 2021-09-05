@@ -1,7 +1,9 @@
 (ns tweedler.core
-  (:require [ring.adapter.jetty :as jetty]))
+  (:require [ring.adapter.jetty :as jetty]
+            [ring.middleware.params :refer [wrap-params]]))
 
-(defn tweedler [request] "Hello world")
+(defn tweedler [request] 
+  (str "Hello " (get (:params request) "name")))
 
 (defn response-middleware [handler]
   (fn [request]
@@ -16,5 +18,10 @@
     )
   )
 
+(def responseHandler
+  (-> tweedler
+      response-middleware
+      wrap-params))
+
 (defn -main []
-  (jetty/run-jetty (response-middleware tweedler) {:port 3000}))
+  (jetty/run-jetty responseHandler {:port 3000}))
