@@ -1,14 +1,14 @@
-# tweedler
+# Tweedler microblog
 
-A Clojure library designed to ... well, that part is up to you.
+A small Clojure microblogging app. 
 
 ## Usage
 
-FIXME
+Start the app with `lein run -m tweedler.core`
+
+The app is now running at `localhost:4000`. 
 
 ## License
-
-Copyright © 2021 FIXME
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which is available at
