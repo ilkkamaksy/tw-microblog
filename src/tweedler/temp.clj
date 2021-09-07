@@ -1,11 +1,11 @@
-(ns tweedler.core
-(:require [net.cgrand.enlive-html :as enlive]
-          [ring.adapter.jetty :as jetty]
-          [ring.middleware.params :refer [wrap-params]]
-          [markdown.core :refer [md-to-html-string]]
-          [clojure.string :refer [escape]]
-          [compojure.route :refer [resources]]
-          [compojure.core :refer [defroutes GET POST]]))
+(ns tweedler.temp)(ns tweedler.core
+  (:require [net.cgrand.enlive-html :as enlive]
+            [compojure.core :refer [defroutes GET POST]]
+            [compojure.route :refer [resources]]
+            [ring.adapter.jetty :as jetty]
+            [ring.middleware.params :refer [wrap-params]]
+            [markdown.core :refer [md-to-html-string]]
+            [clojure.string :refer [escape]]))
 
 (defrecord Tweed [title content])
 
@@ -24,18 +24,16 @@
            update-in [:tweeds] conj tweed)))
 
 (def store (->AtomStore (atom {:tweeds '()})))
-(put-tweed! store (->Tweed "title 1" "content 1"))
-(put-tweed! store (->Tweed "title 2" "content 2"))
 
 (enlive/defsnippet tweed-tpl "tweedler/index.html" [[:article.tweed enlive/first-of-type]]
   [tweed]
-  [:.title] (enlive/html-content (md-to-html-string (:title tweed)))
+  [:.title] (enlive/html-content (:title tweed))
   [:.content] (enlive/html-content (md-to-html-string (:content tweed))))
 
 (enlive/deftemplate index-tpl "tweedler/index.html"
                     [tweeds]
-                    [:section.tweeds] (enlive/content (map tweed-tpl tweeds))
-                    [:form] (enlive/set-attr :method "post" :action "/"))
+                    [:section.tweeds] (enlive/html-content (map tweed-tpl tweeds))
+                    [:form (enlive/set-attr :method "post" :action "/")])
 
 (defn escape-html [s]
   (escape s {\> "&gt;" \< "&lt;"}))
@@ -52,7 +50,9 @@
 
 (def app 
   (-> app-routes
-      (wrap-params)))
+      wrap-params))
 
-(defn -main []
-  (jetty/run-jetty #'app {:port 4000 :join? false}))
+(def server (jetty/run-jetty #'app {:port 3000 :join? false}))
+
+;; (defn -main []
+;;   (jetty/run-jetty app {:port 3000}))

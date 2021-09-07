@@ -7,5 +7,5 @@
                  [markdown-clj "1.10.6"]
                  [enlive "1.1.5"]
                  [ring "1.3.2"]
-                 [compojure "1.3.1"]]
+                 [compojure "1.6.2"]]
   :repl-options {:init-ns tweedler.core})
